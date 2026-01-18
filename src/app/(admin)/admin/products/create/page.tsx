@@ -122,7 +122,7 @@ const Page = () => {
             </div>
           </Card>
           <Card className="px-3 py-2 mt-3">
-             <div>
+            <div>
               <div className="flex items-center justify-between">
                 <h6>Specifications</h6>
                 <Button variant="outline">
@@ -139,11 +139,46 @@ const Page = () => {
                 {hightlights.map(({ title, description }, index) => (
                   <AccordionItem key={title} value={title || `value ${index}`}>
                     <AccordionTrigger>
-                      {title || `Highlights ${index + 1}`}
+                      {title || `Specification ${index + 1}`}
                     </AccordionTrigger>
                     <AccordionContent className="flex flex-col gap-4 text-balance">
-                      <Input placeholder="Title" />
-                      <Textarea placeholder="Description" />
+                      <ReusableField label="Section Name">
+                        <Input placeholder="Display" />
+                      </ReusableField>
+                      <Card className="px-2 py-3">
+                        <div className="flex items-center justify-between">
+                          <h6></h6>
+                          <Button variant="outline">
+                            {" "}
+                            <Plus /> Add Option
+                          </Button>
+                        </div>
+                        <Accordion
+                          type="single"
+                          collapsible
+                          className="w-full"
+                          defaultValue="item-1"
+                        >
+                          {hightlights.map(({ title, description }, index) => (
+                            <AccordionItem
+                              key={title}
+                              value={title || `value ${index}`}
+                            >
+                              <AccordionTrigger>Key & Value</AccordionTrigger>
+                              <AccordionContent className="flex flex-col gap-4 text-balance">
+                                <div className="grid grid-cols-2 gap-4">
+                                    <ReusableField label="Key">
+                                  <Input placeholder="" />
+                                </ReusableField>
+                                <ReusableField label="Value">
+                                  <Input placeholder="0" />
+                                </ReusableField>
+                                </div>
+                              </AccordionContent>
+                            </AccordionItem>
+                          ))}
+                        </Accordion>
+                      </Card>
                     </AccordionContent>
                   </AccordionItem>
                 ))}
