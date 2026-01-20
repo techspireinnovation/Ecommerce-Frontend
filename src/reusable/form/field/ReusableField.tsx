@@ -8,7 +8,7 @@ type ReusableFieldProps = {
 const ReusableField = ({ label, children }: ReusableFieldProps) => {
   return (
     <Field>
-      <FieldLabel className="mt-4">{label}</FieldLabel>
+      <FieldLabel>{label}</FieldLabel>
       {children}
     </Field>
   );

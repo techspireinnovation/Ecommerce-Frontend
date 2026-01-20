@@ -18,6 +18,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
+import SeoCard from "@/features/product/brands/components/seoCard";
 import ReusableField from "@/reusable/form/field/ReusableField";
 import { Plus } from "lucide-react";
 import { useState } from "react";
@@ -164,15 +165,18 @@ const Page = () => {
                               key={title}
                               value={title || `value ${index}`}
                             >
-                              <AccordionTrigger>Key & Value</AccordionTrigger>
+                              <AccordionTrigger>
+                                {" "}
+                                {`Variant ${index}`}
+                              </AccordionTrigger>
                               <AccordionContent className="flex flex-col gap-4 text-balance">
                                 <div className="grid grid-cols-2 gap-4">
-                                    <ReusableField label="Key">
-                                  <Input placeholder="" />
-                                </ReusableField>
-                                <ReusableField label="Value">
-                                  <Input placeholder="0" />
-                                </ReusableField>
+                                  <ReusableField label="Key">
+                                    <Input placeholder="" />
+                                  </ReusableField>
+                                  <ReusableField label="Value">
+                                    <Input placeholder="0" />
+                                  </ReusableField>
                                 </div>
                               </AccordionContent>
                             </AccordionItem>
@@ -186,8 +190,91 @@ const Page = () => {
             </div>
           </Card>
         </div>
-        <Card></Card>
+        <div className="product-right">
+          <Card className="p-4">
+            <div className="flex items-center justify-between">
+              <h6>Variant</h6>
+              <Button variant="outline">
+                {" "}
+                <Plus /> Add Variant{" "}
+              </Button>
+            </div>
+            <Accordion
+              type="single"
+              collapsible
+              className="w-full"
+              defaultValue="value 1"
+            >
+              {hightlights.map(({ title, description }, index) => (
+                <AccordionItem key={title} value={title || `value ${index}`}>
+                  <AccordionTrigger>{`Variant ${index + 1}`}</AccordionTrigger>
+                  <AccordionContent className="flex flex-col gap-4 text-balance">
+                    <ReusableField label="Color Name">
+                      <Input placeholder="Titanium Blue" />
+                    </ReusableField>
+                    <Card className="p-2">
+                      <div className="flex items-center justify-between">
+                        <h6>Storage Options</h6>
+                        <Button variant="outline">
+                          {" "}
+                          <Plus /> Add{" "}
+                        </Button>
+                      </div>
+                      <Accordion
+                        type="single"
+                        collapsible
+                        className="w-full"
+                        defaultValue="value 1"
+                      >
+                        <AccordionItem
+                          key={title}
+                          value={title || `value ${index}`}
+                        >
+                          <AccordionTrigger>
+                            {title || `Storage Option ${index + 1}`}
+                          </AccordionTrigger>
+                          <AccordionContent className="flex flex-col gap-4 text-balance">
+                            <ReusableField label="Storage Option">
+                              <Input placeholder="128gb" />
+                            </ReusableField>
+                            <div className="grid grid-cols-2 gap-4">
+                              <ReusableField label="Stock Quantity">
+                                <Input placeholder="50" type="number" />
+                              </ReusableField>
+                              <ReusableField label="Low Stock Threshold">
+                                <Input placeholder="20" type="number" />
+                              </ReusableField>
+                            </div>
+                          </AccordionContent>
+                        </AccordionItem>
+                      </Accordion>
+                    </Card>
+                  </AccordionContent>
+                </AccordionItem>
+              ))}
+            </Accordion>
+          </Card>
+          <Card className="p-3 mt-4">
+            <h5>Policies</h5>
+            <ReusableField label="Warranty">
+              <Input placeholder="Title" />
+              <Textarea placeholder="Description" />
+              <Input placeholder="Duration" />
+            </ReusableField>
+          </Card>
+          <Card className="p-3 mt-3">
+            <h5>Status & Tag</h5>
+            <ReusableField label="Status">
+              <Input placeholder="Status" />
+            </ReusableField>
+            <ReusableField label="Tag">
+              <Input placeholder="New arrivals" />
+            </ReusableField>
+          </Card>
+          <Button className="mt-4">Next</Button>
+        </div>
       </div>
+      <SeoCard />
     </div>
   );
 };

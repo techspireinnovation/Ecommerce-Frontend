@@ -61,6 +61,12 @@ const navItems: NavItem[] = [
     badge: "3",
   },
   {
+    title: "Brands",
+    icon: <Tag className="h-5 w-5" />,
+    href: "/admin/brand/list",
+    badge: "3",
+  },
+  {
     title: "Banner",
     icon: <ImageIcon className="h-5 w-5" />,
     href: "/admin/banner/list",
