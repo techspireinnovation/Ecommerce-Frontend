@@ -34,7 +34,7 @@ const UploadImageContainer = ({
 
   return (
     <>
-      {label && <label>{label} Logo</label>}
+      {label && <label className="font-medium">{label} Logo</label>}
       <div className="flex flex-col items-center gap-4 border-1 my-2 py-4 rounded-lg">
         {previewUrl ? (
           <img

@@ -3,16 +3,16 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { ReusableListTable } from "../table/data-table";
 import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import ReusableDialog from "../dialog/ReusableDialog";
 
 export interface ListPageWrapperProps {
   pageFor: string;
   createRoute?: string;
-  renderModal?: string;
+  renderModal?: boolean;
   columns: any;
-  data: any;
   children?:any;
+  url: string;
 }
 
 const ListPageWrapper = ({
@@ -20,12 +20,12 @@ const ListPageWrapper = ({
   createRoute,
   renderModal,
   columns,
-  data,
-  children
+  children,
+  url
 }: ListPageWrapperProps) => {
   const uppercaseText = pageFor;
   const router = useRouter();
-  const [isModalOpen, setModalOpen] = useState<boolean>(false);
+  const [isModalOpen, setModalOpen] = useState<boolean | undefined>(renderModal);
 
   const handleAddClick = () => {
     if (renderModal) {
@@ -34,6 +34,13 @@ const ListPageWrapper = ({
       router.push(createRoute);
     }
   };
+
+
+  useEffect(()=>{
+    if(renderModal == true){
+      setModalOpen(true);
+    }
+  }, [renderModal])
 
   return (
     <div>
@@ -49,7 +56,7 @@ const ListPageWrapper = ({
       </div>
       <Card className="mt-10">
         <CardContent className="px-0">
-          <ReusableListTable data={data} columns={columns} pageFor={pageFor} />
+          <ReusableListTable  columns={columns} pageFor={pageFor} url={url}/>
         </CardContent>
       </Card>
       {

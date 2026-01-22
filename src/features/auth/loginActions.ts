@@ -35,7 +35,7 @@ export async function adminLogin(loginData: LoginValues) {
 
   const cookieStore = await cookies();
 
-  cookieStore.set("admin_access_token", access_token, {
+  cookieStore.set("access_token", access_token, {
     httpOnly: true,
     secure: false,
     sameSite: "strict",
@@ -43,7 +43,7 @@ export async function adminLogin(loginData: LoginValues) {
     maxAge: 60 * 15,
   });
 
-   cookieStore.set("admin_refresh_token", refresh_token, {
+   cookieStore.set("refresh_token", refresh_token, {
     httpOnly: true,
     secure: process.env.NODE_ENV === "production",
     sameSite: "strict",

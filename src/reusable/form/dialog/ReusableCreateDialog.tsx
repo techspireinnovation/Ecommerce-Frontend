@@ -12,34 +12,70 @@ import {  useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { createCategory } from "@/features/product/categories/categoryActions";
 import { toast } from "sonner";
+import { useEffect } from "react";
+import { Form } from "@/components/ui/form";
 
 interface ReusableCreateDialogProps {
   label: string;
   schema: any;
   createFn: any;
+  isEdit: boolean;
+  updateFn: any;
+  showFn: any;
+  selectedId: any;
 }
 
-const ReusableCreateDialog = ({ label, schema }: ReusableCreateDialogProps) => {
-  const {
-    register,
-    handleSubmit,
-    control,
-    getValues,
-    setValue,
-    formState: { errors, isSubmitting },
-  } = useForm<CategoryTypes>({
+
+const ReusableCreateDialog = ({ label, schema, isEdit, updateFn, showFn, createFn, selectedId }: ReusableCreateDialogProps) => {
+  const methods = useForm<CategoryTypes>({
     resolver: zodResolver(schema),
-    defaultValues: {
-      seo_keywords: [],
-    },
+      shouldUnregister: false,
+
+    defaultValues:  {
+        name: "",
+        seo_title:"",
+        seo_description:  "",
+        seo_keywords:  [],
+      },
   });
 
-  const keywords = ["apple", "banana", "orange"];
+  const getById = async(id:number) =>{
+ (async () => {
+    const res = await showFn(selectedId);
+    const api = res.data.data;
+
+    methods.reset(
+      {
+        name: api.name ?? "",
+        seo_title: api.seo_title ?? "",
+        seo_description: api.seo_description ?? "",
+        seo_keywords: api.seo_keywords ?? [],
+        status: api.status === "active",
+      },
+      {
+        keepDirty: false,
+      }
+    );
+  })();
+}
+
+console.log('getValues', methods.getValues());
+
+  useEffect(()=> {
+    if(isEdit){
+      getById(selectedId);
+    }
+  },[isEdit])
+
 
   const onSubmitHandler = async (data: CategoryTypes) => {
+    if(isEdit){
+      console.log('getValues', methods.getValues());
+      return;
+    }
     const formData = new FormData();
     formData.append("name", data.name);
-    formData.append("status", 'false');
+    formData.append("status", data.status == true ?"1":"0");
     if (data.logo) {
       formData.append("image", data.logo);
       formData.append("seo_image", data.logo);
@@ -53,10 +89,12 @@ const ReusableCreateDialog = ({ label, schema }: ReusableCreateDialogProps) => {
     try {
      
       const res = await createCategory(formData);
-      console.log("res", res);
       if(res.success == false){
-        const error = res?.error.body.message;
+        const error = res.error.body.message;
         toast.error(error, {position: 'bottom-center'});
+      }
+      if(res.success == true){
+        toast.success('Category created Successfully');
       }
     
     } catch (error) {
@@ -67,7 +105,7 @@ const ReusableCreateDialog = ({ label, schema }: ReusableCreateDialogProps) => {
   };
 
   const onErrorHandler = (errors: any) => {
-    console.log(errors, { values: getValues() });
+    console.log(errors, { values: methods.getValues() });
     const firstError = Object.entries(errors)[0];
     if (firstError) {
       const [field, error] = firstError;
@@ -78,35 +116,38 @@ const ReusableCreateDialog = ({ label, schema }: ReusableCreateDialogProps) => {
   return (
     <>
       <DialogCreateFormHeader pageFor={label} />
-      <form onSubmit={handleSubmit(onSubmitHandler, onErrorHandler)}>
+     <Form {...methods}>
+       <form onSubmit={methods.handleSubmit(onSubmitHandler, onErrorHandler)}>
         <UploadImageContainer
           icon={<Image size={80} color="gray" />}
           label={label}
           uploadButtonText={"Upload Image"}
           name="logo"
-          register={register}
-          control={control}
-          setValue={setValue}
-          error={errors.logo?.message}
-          getValues={getValues}
+          register={methods.register}
+          control={methods.control}
+          setValue={methods.setValue}
+          error={methods.formState.errors.logo?.message}
+          getValues={methods.getValues}
         />
         <ReusableField label={`${label} name`}>
-          <Input {...register("name")} />
+          <Input {...methods.register("name")} />
         </ReusableField>
         <SeoSettingsReusable
-          register={register}
-          setValue={setValue}
-          errors={errors}
-          control={control}
-          getValues={getValues}
+          register={methods.register}
+          setValue={methods.setValue}
+          errors={methods.formState.errors}
+          control={methods.control}
+          getValues={methods.getValues}
+          reset={methods.reset}
         />
         <ReusableStatusCard
-          control={control}
+          control={methods.control}
           name={`${label}`}
-          register={register}
+          register={methods.register}
         />
-        <SubmitCancel isSubmitting={isSubmitting} />
+        <SubmitCancel isSubmitting={methods.formState.isSubmitting} />
       </form>
+     </Form>
     </>
   );
 };

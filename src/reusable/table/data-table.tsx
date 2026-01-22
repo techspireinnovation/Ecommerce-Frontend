@@ -5,6 +5,7 @@ import {
   getCoreRowModel,
   getFilteredRowModel,
   getPaginationRowModel,
+  getSortedRowModel,
   useReactTable,
 } from "@tanstack/react-table";
 
@@ -19,18 +20,46 @@ import {
 } from "@/components/ui/table";
 
 import { Button } from "@/components/ui/button";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { getCategoryList } from "@/features/product/categories/categoryActions";
 
-export function ReusableListTable({ data, columns, pageFor }: any) {
+export const ReusableListTable = ({ columns, pageFor, url }: any)=> {
+  const [data, setData] = useState<any[]>([]);
+  const [isLoading, setIsLoading] = useState(false);
+
   const [globalFilter, setGlobalFilter] = useState("");
+  const [sorting, setSorting] = useState([]);
+  const [pageIndex, setPageIndex] = useState(0);
+  const [pageSize, setPageSize] = useState(10);
+
+
+  useEffect(() => {
+    const fetchData = async () => {
+      setIsLoading(true);
+      try {
+        const res = await getCategoryList();
+        console.log('res', {res: res,data:res?.data?.data})
+        setData(res.data.data);
+      } catch (error) {
+        console.error("Error fetching users", error);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+    fetchData();
+  }, []);
+
+  console.log('data', {data, columns});
 
   const table = useReactTable({
     data,
     columns,
-    state: { globalFilter },
+    state: { globalFilter, sorting, pagination: { pageIndex, pageSize } },
+    onSortingChange: setSorting,
     onGlobalFilterChange: setGlobalFilter,
     getCoreRowModel: getCoreRowModel(),
     getFilteredRowModel: getFilteredRowModel(),
+    getSortedRowModel: getSortedRowModel(),
     getPaginationRowModel: getPaginationRowModel(),
   });
 
@@ -85,10 +114,14 @@ export function ReusableListTable({ data, columns, pageFor }: any) {
             {table.getHeaderGroups().map((group) => (
               <TableRow key={group.id}>
                 {group.headers.map((header) => (
-                  <TableHead key={header.id} className="h-12 bg-[#f8fbfb]">
+                  <TableHead
+                    key={header.id}
+                    className="h-12 bg-[#f8fbfb]"
+                    onClick={header.column.getToggleSortingHandler()}
+                  >
                     {flexRender(
                       header.column.columnDef.header,
-                      header.getContext()
+                      header.getContext(),
                     )}
                   </TableHead>
                 ))}
@@ -104,7 +137,7 @@ export function ReusableListTable({ data, columns, pageFor }: any) {
                     <TableCell key={cell.id}>
                       {flexRender(
                         cell.column.columnDef.cell,
-                        cell.getContext()
+                        cell.getContext(),
                       )}
                     </TableCell>
                   ))}
@@ -116,7 +149,7 @@ export function ReusableListTable({ data, columns, pageFor }: any) {
                   colSpan={columns.length}
                   className="h-24 text-center"
                 >
-                  No {pageFor} found
+                  No {pageFor} found to list.
                 </TableCell>
               </TableRow>
             )}
@@ -145,3 +178,6 @@ export function ReusableListTable({ data, columns, pageFor }: any) {
     </div>
   );
 }
+
+
+export default ReusableListTable;

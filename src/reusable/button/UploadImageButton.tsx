@@ -40,10 +40,10 @@ const UploadImageButton = ({
   return (
     <div className="flex flex-col gap-2">
       <label htmlFor="upload" className="w-max">
-        <Button asChild variant="default">
+        <Button  asChild variant="default" >
           <div className="flex items-center gap-2">
             <Upload />
-            <span>{text}</span>
+            <span className="!text-white">{text}</span>
           </div>
         </Button>
       </label>

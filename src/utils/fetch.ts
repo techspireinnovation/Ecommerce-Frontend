@@ -16,7 +16,7 @@ class ApiError extends Error {
 const API_BASE_URL = "http://127.0.0.1:8000/api";
 export async function apiFetch(endpoint: string, options: RequestInit = {}) {
   const cookieStore = await cookies();
-  const accessToken = cookieStore.get("admin_access_token")?.value;
+  const accessToken = cookieStore.get("access_token")?.value;
 
   const isFormData = options.body instanceof FormData;
 
@@ -32,8 +32,8 @@ export async function apiFetch(endpoint: string, options: RequestInit = {}) {
   });
 
   if (res.status === 401) {
-    cookieStore.delete("admin_access_token");
-    cookieStore.delete("admin_refresh_token");
+    cookieStore.delete("access_token");
+    cookieStore.delete("refresh_token");
     throw new Error("SESSION_EXPIRED");
   }
 
@@ -45,7 +45,7 @@ export async function apiFetch(endpoint: string, options: RequestInit = {}) {
 
   if (tokenRefreshed === "true") {
     if (newAccessToken) {
-      cookieStore.set("admin_access_token", newAccessToken, {
+      cookieStore.set("access_token", newAccessToken, {
         httpOnly: true,
         secure: process.env.NODE_ENV === "production",
         sameSite: "strict",
@@ -55,7 +55,7 @@ export async function apiFetch(endpoint: string, options: RequestInit = {}) {
     }
 
     if (newRefreshToken) {
-      cookieStore.set("admin_refresh_token", newRefreshToken, {
+      cookieStore.set("refresh_token", newRefreshToken, {
         httpOnly: true,
         secure: process.env.NODE_ENV === "production",
         sameSite: "strict",
