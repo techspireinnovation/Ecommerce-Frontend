@@ -5,7 +5,7 @@ import { BrandListTypes } from "@/features/product/brands/brand.types";
 import ReusableCreateDialog from "@/reusable/form/dialog/ReusableCreateDialog";
 import ListPageWrapper from "@/reusable/list/ListPageWrapper";
 import { ColumnDef } from "@tanstack/react-table";
-import { Eye, Pencil, Trash2 } from "lucide-react";
+import {SquarePen, Trash2 } from "lucide-react";
 
 export const brandColumns: ColumnDef<BrandListTypes>[] = [
   {
@@ -58,8 +58,7 @@ export const brandColumns: ColumnDef<BrandListTypes>[] = [
 
       return (
         <Badge
-          variant="outline"
-          className={`${variant.bg} ${variant.text} border-0 text-xs font-normal px-2 py-1 rounded-full`}
+          className={`${variant.bg} ${variant.text} !text-xs rounded-full`}
         >
           {status.replace("_", " ")}
         </Badge>
@@ -74,7 +73,7 @@ export const brandColumns: ColumnDef<BrandListTypes>[] = [
     size: 110,
     minSize: 100,
     cell: ({ row }) => (
-      <div className="text-xs text-foreground font-normal">
+      <div className="text-sm text-foreground font-normal">
         {row.getValue("created")}
       </div>
     ),
@@ -91,19 +90,13 @@ export const brandColumns: ColumnDef<BrandListTypes>[] = [
 
     cell: () => (
       <div className="flex items-center gap-1">
+       
         <Button
           size="icon"
           variant="ghost"
           className="h-8 w-8 hover:bg-muted/50"
         >
-          <Eye className="h-4 w-4 text-muted-foreground" />
-        </Button>
-        <Button
-          size="icon"
-          variant="ghost"
-          className="h-8 w-8 hover:bg-muted/50"
-        >
-          <Pencil className="h-4 w-4 text-muted-foreground" />
+          <SquarePen className="h-4 w-4 text-muted-foreground" />
         </Button>
         <Button
           size="icon"

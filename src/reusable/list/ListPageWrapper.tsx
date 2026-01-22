@@ -39,8 +39,8 @@ const ListPageWrapper = ({
     <div>
       <div className="flex items-center justify-between">
         <div>
-          <h2 className="text-xl font-bold">{uppercaseText} Management</h2>
-          <p className="te|xt-sm text-muted-foreground">
+          <h2 className="!text-3xl font-bold mb-1">{uppercaseText} Management</h2>
+          <p className="!text-base text-muted-foreground">
             Manage and organize your {uppercaseText}
           </p>
         </div>

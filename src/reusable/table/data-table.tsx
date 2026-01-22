@@ -21,7 +21,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { useState } from "react";
 
-export function ReusableListTable({ data, columns, filterBy, pageFor }: any) {
+export function ReusableListTable({ data, columns, pageFor }: any) {
   const [globalFilter, setGlobalFilter] = useState("");
 
   const table = useReactTable({

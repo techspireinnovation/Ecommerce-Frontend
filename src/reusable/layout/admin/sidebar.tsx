@@ -118,7 +118,7 @@ export function Sidebar() {
           <SidebarGroupLabel>Main</SidebarGroupLabel>
           <SidebarGroupContent>
             <SidebarMenu>
-              {navItems.map((item, index) => {
+              {navItems.map((item) => {
                 const isActive = pathname == item.href;
 
                 return (
@@ -127,7 +127,7 @@ export function Sidebar() {
                       isActive={isActive}
                       asChild
                       className="
-    h-12
+    h-10
     data-[active=true]:bg-[#7AA9D2]
 data-[active=true]:[&_span]:!text-white
   data-[active=true]:[&_svg]:!text-white
