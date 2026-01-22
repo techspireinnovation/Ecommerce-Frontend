@@ -120,7 +120,12 @@ export function Sidebar() {
                   <SidebarMenuButton
                     isActive={index == activeState}
                     asChild
-                    className="h-11"
+                    className="
+    h-12
+    data-[active=true]:bg-[#7AA9D2]
+data-[active=true]:[&_span]:!text-white
+  data-[active=true]:[&_svg]:!text-white
+ "
                     onClick={() => {
                       setActiveState(index);
                     }}

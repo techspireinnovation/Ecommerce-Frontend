@@ -192,8 +192,8 @@ span {
 }
 
 small {
-  font-size: 0.875rem; /* 14px */
-  color: #6b7280; /* light gray */
+  font-size: 0.875rem;
+  color: #6b7280; 
 }
 
 strong {
