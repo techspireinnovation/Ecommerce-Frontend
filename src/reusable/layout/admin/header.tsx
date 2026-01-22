@@ -1,5 +1,3 @@
-'use client'
-
 import { Search, Bell, HelpCircle } from 'lucide-react'
 import { Input } from '@/components/ui/input'
 import { Button } from '@/components/ui/button'
@@ -18,25 +16,15 @@ import { Badge } from '@/components/ui/badge'
 
 export function Header() {
   return (
-    <header className="sticky top-0 z-50 flex h-16 items-center justify-between border-b bg-background px-4 md:px-6">
+    <header className="sticky top-0 z-50 flex h-16 items-center justify-between border-b bg-background px-2">
       <div className="flex items-center gap-4">
         <SidebarTrigger className="h-8 w-8" />
         <Separator orientation="vertical" className="mx-2 h-6" />
         
-        <div className="relative hidden md:flex">
-          <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
-          <Input
-            placeholder="Search..."
-            className="w-64 pl-9"
-          />
-        </div>
+     
       </div>
       
       <div className="flex items-center gap-2">
-        <Button variant="ghost" size="icon" className="hidden md:flex">
-          <HelpCircle className="h-5 w-5" />
-        </Button>
-        
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <Button variant="ghost" size="icon" className="relative">
@@ -80,8 +68,8 @@ export function Header() {
                 <AvatarFallback>JD</AvatarFallback>
               </Avatar>
               <div className="hidden flex-col items-start md:flex">
-                <span className="text-sm font-medium">John Doe</span>
-                <span className="text-xs text-muted-foreground">Administrator</span>
+                <span className="!text-sm !font-medium">John Doe</span>
+                <span className="!text-xs !text-muted-foreground">Administrator</span>
               </div>
             </Button>
           </DropdownMenuTrigger>
