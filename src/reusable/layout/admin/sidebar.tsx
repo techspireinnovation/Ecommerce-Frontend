@@ -27,6 +27,8 @@ import {
 import { Separator } from "@/components/ui/separator";
 import { useSidebar } from "@/components/ui/sidebar";
 import { useState } from "react";
+import { usePathname } from "next/navigation";
+import Link from "next/link";
 
 interface NavItem {
   title: string;
@@ -102,7 +104,8 @@ const navItems: NavItem[] = [
 
 export function Sidebar() {
   const { state } = useSidebar();
-  const [activeState, setActiveState] = useState(0);
+
+  const pathname = usePathname();
 
   return (
     <ShadSidebar collapsible="icon" className="border-r bg-background">
@@ -115,28 +118,33 @@ export function Sidebar() {
           <SidebarGroupLabel>Main</SidebarGroupLabel>
           <SidebarGroupContent>
             <SidebarMenu>
-              {navItems.map((item, index) => (
-                <SidebarMenuItem key={item.title}>
-                  <SidebarMenuButton
-                    isActive={index == activeState}
-                    asChild
-                    className="
+              {navItems.map((item, index) => {
+                const isActive = pathname == item.href;
+
+                return (
+                  <SidebarMenuItem key={item.title}>
+                    <SidebarMenuButton
+                      isActive={isActive}
+                      asChild
+                      className="
     h-12
     data-[active=true]:bg-[#7AA9D2]
 data-[active=true]:[&_span]:!text-white
   data-[active=true]:[&_svg]:!text-white
  "
-                    onClick={() => {
-                      setActiveState(index);
-                    }}
-                  >
-                    <a href={item.href} className="flex items-center gap-2">
-                      {item.icon}
-                      <span>{item.title}</span>
-                    </a>
-                  </SidebarMenuButton>
-                </SidebarMenuItem>
-              ))}
+                    
+                    >
+                      <Link
+                        href={item.href}
+                        className="flex items-center gap-2"
+                      >
+                        {item.icon}
+                        <span>{item.title}</span>
+                      </Link>
+                    </SidebarMenuButton>
+                  </SidebarMenuItem>
+                );
+              })}
             </SidebarMenu>
           </SidebarGroupContent>
         </SidebarGroup>
