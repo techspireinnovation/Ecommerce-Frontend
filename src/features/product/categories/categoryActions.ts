@@ -92,7 +92,7 @@ export async function showCategory(id: any) {
 export async function updateCategory(data: FormData) {
   try {
     const res = await apiFetch("/admin/categories", {
-      method: "PUT",
+      method: "POST",
       body: data,
     });
 

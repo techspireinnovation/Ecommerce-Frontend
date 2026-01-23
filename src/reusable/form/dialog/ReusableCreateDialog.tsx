@@ -8,7 +8,7 @@ import UploadImageContainer from "../UploadImageContainer";
 import { Image } from "lucide-react";
 import DialogCreateFormHeader from "./header";
 import { CategoryTypes } from "@/features/product/categories/category.schema";
-import {  useForm } from "react-hook-form";
+import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { createCategory } from "@/features/product/categories/categoryActions";
 import { toast } from "sonner";
@@ -25,60 +25,63 @@ interface ReusableCreateDialogProps {
   selectedId: any;
 }
 
-
-const ReusableCreateDialog = ({ label, schema, isEdit, updateFn, showFn, createFn, selectedId }: ReusableCreateDialogProps) => {
+const ReusableCreateDialog = ({
+  label,
+  schema,
+  isEdit,
+  updateFn,
+  showFn,
+  createFn,
+  selectedId,
+}: ReusableCreateDialogProps) => {
   const methods = useForm<CategoryTypes>({
     resolver: zodResolver(schema),
-      shouldUnregister: false,
+    shouldUnregister: false,
 
-    defaultValues:  {
-        name: "",
-        seo_title:"",
-        seo_description:  "",
-        seo_keywords:  [],
-      },
+    defaultValues: {
+      name: "",
+      seo_title: "",
+      seo_description: "",
+      seo_keywords: [],
+    },
   });
 
-  const getById = async(id:number) =>{
- (async () => {
-    const res = await showFn(selectedId);
-    const api = res.data.data;
+  const getById = async (id: number) => {
+    (async () => {
+      const res = await showFn(selectedId);
+      const api = res.data.data;
+      console.log("api", api);
+      methods.reset(
+        {
+          name: api.name ?? "",
+          seo_image_url: api.seo_image_url,
+          seo_title: api.seo_title ?? "",
+          seo_description: api.seo_description ?? "",
+          seo_keywords: api.seo_keywords ?? [],
+          status: api.status === "active",
+          image_url: api.image_url,
+        },
+        {
+          keepDirty: false,
+        },
+      );
+    })();
+  };
 
-    methods.reset(
-      {
-        name: api.name ?? "",
-        seo_title: api.seo_title ?? "",
-        seo_description: api.seo_description ?? "",
-        seo_keywords: api.seo_keywords ?? [],
-        status: api.status === "active",
-      },
-      {
-        keepDirty: false,
-      }
-    );
-  })();
-}
-
-console.log('getValues', methods.getValues());
-
-  useEffect(()=> {
-    if(isEdit){
+  useEffect(() => {
+    if (isEdit) {
       getById(selectedId);
     }
-  },[isEdit])
-
+  }, [isEdit]);
 
   const onSubmitHandler = async (data: CategoryTypes) => {
-    if(isEdit){
-      console.log('getValues', methods.getValues());
-      return;
-    }
+   
     const formData = new FormData();
     formData.append("name", data.name);
-    formData.append("status", data.status == true ?"1":"0");
-    if (data.logo) {
-      formData.append("image", data.logo);
-      formData.append("seo_image", data.logo);
+    formData.append("status", data.status == true ? "1" : "0");
+    if (data.image_url) {
+      formData.append("image", data.image_url);
+      formData.append("seo_image", data.image_url);
     }
 
     if (data.seo_description)
@@ -87,18 +90,18 @@ console.log('getValues', methods.getValues());
     formData.append("seo_keywords[]", "rice");
     if (data.seo_title) formData.append("seo_title", data.seo_title);
     try {
-     
-      const res = await createCategory(formData);
-      if(res.success == false){
+      console.log('data', data);
+      const res = await updateFn(data);
+      if (res.success == false) {
         const error = res.error.body.message;
-        toast.error(error, {position: 'bottom-center'});
+        console.log('res', {error: res.error});
+        toast.error(error, { position: "bottom-center" });
       }
-      if(res.success == true){
-        toast.success('Category created Successfully');
+      if (res.success == true) {
+        toast.success("Category created Successfully");
       }
-    
     } catch (error) {
-    console.log('error', {error});
+      console.log("error", { error });
     } finally {
       console.log("finally");
     }
@@ -116,38 +119,38 @@ console.log('getValues', methods.getValues());
   return (
     <>
       <DialogCreateFormHeader pageFor={label} />
-     <Form {...methods}>
-       <form onSubmit={methods.handleSubmit(onSubmitHandler, onErrorHandler)}>
-        <UploadImageContainer
-          icon={<Image size={80} color="gray" />}
-          label={label}
-          uploadButtonText={"Upload Image"}
-          name="logo"
-          register={methods.register}
-          control={methods.control}
-          setValue={methods.setValue}
-          error={methods.formState.errors.logo?.message}
-          getValues={methods.getValues}
-        />
-        <ReusableField label={`${label} name`}>
-          <Input {...methods.register("name")} />
-        </ReusableField>
-        <SeoSettingsReusable
-          register={methods.register}
-          setValue={methods.setValue}
-          errors={methods.formState.errors}
-          control={methods.control}
-          getValues={methods.getValues}
-          reset={methods.reset}
-        />
-        <ReusableStatusCard
-          control={methods.control}
-          name={`${label}`}
-          register={methods.register}
-        />
-        <SubmitCancel isSubmitting={methods.formState.isSubmitting} />
-      </form>
-     </Form>
+      <Form {...methods}>
+        <form onSubmit={methods.handleSubmit(onSubmitHandler, onErrorHandler)}>
+          <UploadImageContainer
+            icon={<Image size={80} color="gray" />}
+            label={label}
+            uploadButtonText={"Upload Image"}
+            name="image_url"
+            register={methods.register}
+            control={methods.control}
+            setValue={methods.setValue}
+            error={methods.formState.errors.image_url?.message}
+            getValues={methods.getValues}
+          />
+          <ReusableField label={`${label} name`}>
+            <Input {...methods.register("name")} />
+          </ReusableField>
+          <SeoSettingsReusable
+            register={methods.register}
+            setValue={methods.setValue}
+            errors={methods.formState.errors}
+            control={methods.control}
+            getValues={methods.getValues}
+            reset={methods.reset}
+          />
+          <ReusableStatusCard
+            control={methods.control}
+            name={`${label}`}
+            register={methods.register}
+          />
+          <SubmitCancel isSubmitting={methods.formState.isSubmitting} />
+        </form>
+      </Form>
     </>
   );
 };
