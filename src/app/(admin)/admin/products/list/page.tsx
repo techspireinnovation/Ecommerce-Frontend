@@ -3,7 +3,8 @@ import { brandColumns, brandData } from "../../brand/list/page";
 
 const Page = () => {
   return (
-    <ListPageWrapper columns={brandColumns} data={brandData} pageFor="Product" createRoute="/admin/products/create" />
+    // <ListPageWrapper columns={brandColumns} data={brandData} pageFor="Product" createRoute="/admin/products/create" />
+    <></>
   );
 };
 

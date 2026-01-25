@@ -89,9 +89,9 @@ export async function showCategory(id: any) {
 }
 
 
-export async function updateCategory(data: FormData) {
+export async function updateCategory(data: FormData, id: number) {
   try {
-    const res = await apiFetch("/admin/categories", {
+    const res = await apiFetch(`/admin/categories/${id}`, {
       method: "POST",
       body: data,
     });
@@ -99,6 +99,7 @@ export async function updateCategory(data: FormData) {
     return {
       success: true,
       data: res,
+      formData: data, 
       message: "Category created successfully",
     };
   } catch (error) {
@@ -106,6 +107,7 @@ export async function updateCategory(data: FormData) {
     return {
       success: false,
       error,
+      FormData: data,
       message: "Failed to create category",
    
     };

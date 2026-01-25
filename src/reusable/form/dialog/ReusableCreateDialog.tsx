@@ -10,7 +10,6 @@ import DialogCreateFormHeader from "./header";
 import { CategoryTypes } from "@/features/product/categories/category.schema";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { createCategory } from "@/features/product/categories/categoryActions";
 import { toast } from "sonner";
 import { useEffect } from "react";
 import { Form } from "@/components/ui/form";
@@ -55,6 +54,7 @@ const ReusableCreateDialog = ({
         {
           name: api.name ?? "",
           seo_image_url: api.seo_image_url,
+
           seo_title: api.seo_title ?? "",
           seo_description: api.seo_description ?? "",
           seo_keywords: api.seo_keywords ?? [],
@@ -75,13 +75,13 @@ const ReusableCreateDialog = ({
   }, [isEdit]);
 
   const onSubmitHandler = async (data: CategoryTypes) => {
-   
     const formData = new FormData();
     formData.append("name", data.name);
     formData.append("status", data.status == true ? "1" : "0");
-    if (data.image_url) {
+
+    if (typeof data.image_url == "string") {
       formData.append("image", data.image_url);
-      formData.append("seo_image", data.image_url);
+      formData.append("seo_image", data.seo_image_url);
     }
 
     if (data.seo_description)
@@ -90,11 +90,20 @@ const ReusableCreateDialog = ({
     formData.append("seo_keywords[]", "rice");
     if (data.seo_title) formData.append("seo_title", data.seo_title);
     try {
-      console.log('data', data);
-      const res = await updateFn(data);
+      let res = undefined;
+      if (isEdit) {
+        formData.append("_method", "PUT");
+        res = await updateFn(formData, selectedId);
+      } else {
+        res = await createFn(formData);
+      }
       if (res.success == false) {
         const error = res.error.body.message;
-        console.log('res', {error: res.error});
+        console.log("res", { error: res });
+        const newformData = res.FormData;
+        for (const pair of newformData.entries()) {
+          console.log(pair[0], pair[1]);
+        }
         toast.error(error, { position: "bottom-center" });
       }
       if (res.success == true) {

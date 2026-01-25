@@ -1,10 +1,10 @@
-import { DialogHeader } from "@/components/ui/dialog";
+import { DialogHeader, DialogTitle } from "@/components/ui/dialog";
 
 const DialogCreateFormHeader = ({ pageFor }: { pageFor: string }) => {
   return (
     <>
       <DialogHeader className="gap-0">
-        <h4 className="mb-0">Add New {pageFor}</h4>
+        <DialogTitle><h4 className="mb-0">Add New {pageFor}</h4></DialogTitle>
         <p>Fill in the details below</p>
       </DialogHeader>
     </>

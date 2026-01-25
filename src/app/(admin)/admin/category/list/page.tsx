@@ -15,7 +15,7 @@ import { SquarePen, Trash2 } from "lucide-react";
 import Image from "next/image";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { useMemo, useState } from "react";
 export type Category = {
   id: number;
   slug: string;
@@ -53,111 +53,119 @@ const deleteCategoryFunc = async (id: number) => {
 };
 
 const Page = () => {
-  const router = useRouter();
   const [renderModal, setRenderModal] = useState<boolean>(false);
   const [isEdit, setIsEdit] = useState<boolean>(false);
   const [selectedId, setSelectedId] = useState<number | undefined>(undefined);
-  const categoryColumns: ColumnDef<Category>[] = [
-    {
-      accessorKey: "name",
-      header: () => (
-        <div className="text-sm font-medium text-muted-foreground">
-          Category
-        </div>
-      ),
-      size: 260,
-      minSize: 200,
-      cell: ({ row }) => {
-        const category = row.original;
+  const categoryColumns: ColumnDef<Category>[] = useMemo(
+    () => [
+      {
+        accessorKey: "name",
+        header: () => (
+          <div className="text-sm font-medium text-muted-foreground">
+            Category
+          </div>
+        ),
+        size: 260,
+        minSize: 200,
+        cell: ({ row }) => {
+          const category = row.original;
 
-        return (
-          <div className="flex items-center gap-3">
-            <Image
-              src={category.image_url}
-              alt={category.name}
-              width={40}
-              height={40}
-              unoptimized
-              className="rounded-md object-cover border"
-            />
+          return (
+            <div className="flex items-center gap-3">
+              <Image
+                src={category.image_url}
+                alt={category.name}
+                width={40}
+                height={40}
+                unoptimized
+                className="rounded-md object-cover border"
+              />
 
-            <div className="flex flex-col">
-              <span className="text-sm font-medium">{category.name}</span>
+              <div className="flex flex-col">
+                <span className="text-sm font-medium">{category.name}</span>
+              </div>
             </div>
+          );
+        },
+      },
+
+      {
+        accessorKey: "status",
+        header: () => (
+          <div className="text-sm font-medium text-muted-foreground">
+            Status
           </div>
-        );
+        ),
+        size: 120,
+        minSize: 100,
+        cell: ({ row }) => <StatusBadge status={row.getValue("status")} />,
       },
-    },
 
-    {
-      accessorKey: "status",
-      header: () => (
-        <div className="text-sm font-medium text-muted-foreground">Status</div>
-      ),
-      size: 120,
-      minSize: 100,
-      cell: ({ row }) => <StatusBadge status={row.getValue("status")} />,
-    },
-
-    {
-      accessorKey: "created_at",
-      header: () => (
-        <div className="text-sm font-medium text-muted-foreground">Created</div>
-      ),
-      size: 160,
-      minSize: 140,
-      cell: ({ row }) => {
-        const raw = row.getValue<string>("created_at");
-        const date = new Date(raw.replace(" ", "T"));
-
-        return (
-          <span className="text-sm">
-            {isNaN(date.getTime()) ? "-" : date.toLocaleDateString()}
-          </span>
-        );
-      },
-    },
-
-    {
-      id: "actions",
-      header: () => (
-        <div className="text-sm font-medium text-muted-foreground">Actions</div>
-      ),
-      size: 70,
-      enableResizing: false,
-      cell: ({ row }) => {
-        const category = row.original;
-
-        return (
-          <div className="flex items-center gap-1">
-            <Button
-              size="icon"
-              variant="ghost"
-              onClick={() => {
-                console.log("hello");
-                setRenderModal(true);
-                setIsEdit(true);
-                setSelectedId(category.id);
-              }}
-            >
-              <SquarePen className="h-4 w-4" />
-            </Button>
-
-            <Button
-              size="icon"
-              variant="ghost"
-              className="hover:text-destructive"
-              onClick={() => {
-                deleteCategoryFunc(category.id);
-              }}
-            >
-              <Trash2 className="h-4 w-4" />
-            </Button>
+      {
+        accessorKey: "created_at",
+        header: () => (
+          <div className="text-sm font-medium text-muted-foreground">
+            Created
           </div>
-        );
+        ),
+        size: 160,
+        minSize: 140,
+        cell: ({ row }) => {
+          const raw = row.getValue<string>("created_at");
+          const date = new Date(raw.replace(" ", "T"));
+
+          return (
+            <span className="text-sm">
+              {isNaN(date.getTime()) ? "-" : date.toLocaleDateString()}
+            </span>
+          );
+        },
       },
-    },
-  ];
+
+      {
+        id: "actions",
+        header: () => (
+          <div className="text-sm font-medium text-muted-foreground">
+            Actions
+          </div>
+        ),
+        size: 70,
+        enableResizing: false,
+        cell: ({ row }) => {
+          const category = row.original;
+
+          return (
+            <div className="flex items-center gap-1">
+              <Button
+                size="icon"
+                variant="ghost"
+                onClick={() => {
+                  console.log("hello");
+                  setRenderModal(true);
+                  setIsEdit(true);
+                  setSelectedId(category.id);
+                }}
+              >
+                <SquarePen className="h-4 w-4" />
+              </Button>
+
+              <Button
+                size="icon"
+                variant="ghost"
+                className="hover:text-destructive"
+                onClick={() => {
+                  deleteCategoryFunc(category.id);
+                }}
+              >
+                <Trash2 className="h-4 w-4" />
+              </Button>
+            </div>
+          );
+        },
+      },
+    ],
+    [],
+  );
 
   return (
     <ListPageWrapper
