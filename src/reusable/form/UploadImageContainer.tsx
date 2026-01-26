@@ -1,8 +1,8 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import UploadImageButton from "../button/UploadImageButton";
-import { useController, useWatch } from "react-hook-form";
+import { useController } from "react-hook-form";
 
 interface UploadImageContainerProps {
   icon: React.ReactNode;
@@ -25,23 +25,10 @@ const UploadImageContainer = ({
   control,
 }: UploadImageContainerProps) => {
   const { field } = useController({ name, control });
-  const [previewUrl, setPreviewUrl] = useState<string | null>(null);
+  const [previewUrl, setPreviewUrl] = useState<string>("");
   const handleFileUpload = (file: File) => {
     field.onChange(file);
   };
-
-  const imageUrlValue = useWatch({
-    control, name
-  });
-
-
-  useEffect(() => {
-  if (imageUrlValue) {
-    setPreviewUrl(imageUrlValue);
-  } else {
-    setPreviewUrl(null);
-  }
-}, [imageUrlValue]);
 
   return (
     <>
@@ -64,6 +51,7 @@ const UploadImageContainer = ({
           setPreviewUrl={setPreviewUrl}
           onFileUpload={handleFileUpload}
           text={uploadButtonText}
+          label={label}
         />
       </div>
       {error && <p className="text-sm text-red-500">{error}</p>}

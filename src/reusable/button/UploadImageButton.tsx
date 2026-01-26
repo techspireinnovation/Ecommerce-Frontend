@@ -8,6 +8,7 @@ interface UploadImageButtonProps {
   onFileUpload: (file: File) => void;
   previewUrl: string | null;
   setPreviewUrl: any;
+  label?: string;
 }
 
 const UploadImageButton = ({
@@ -15,15 +16,15 @@ const UploadImageButton = ({
   onFileUpload,
   previewUrl,
   setPreviewUrl,
+  label
 }: UploadImageButtonProps) => {
-  const [fileName, setFileName] = useState<string | null>(null);
+
+  console.log('text', {label});
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files.length > 0) {
       const file = e.target.files[0];
-      setFileName(file.name);
       const url = URL.createObjectURL(file);
-
       onFileUpload(file);
       setPreviewUrl(url);
     }
@@ -40,7 +41,7 @@ const UploadImageButton = ({
   return (
     <div className="flex flex-col gap-2">
       <label htmlFor="upload" className="w-max">
-        <Button  asChild variant="default" >
+        <Button asChild variant="default">
           <div className="flex items-center gap-2">
             <Upload />
             <span className="!text-white">{text}</span>

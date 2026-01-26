@@ -4,8 +4,8 @@ const DialogCreateFormHeader = ({ pageFor }: { pageFor: string }) => {
   return (
     <>
       <DialogHeader className="gap-0">
-        <DialogTitle>Add New {pageFor}</DialogTitle>
-        <p>Fill in the details below</p>
+        <DialogTitle className="!text-xl mb-1">Add New {pageFor}</DialogTitle>
+        <p className="!text-sm">Fill in the details below</p>
       </DialogHeader>
     </>
   );

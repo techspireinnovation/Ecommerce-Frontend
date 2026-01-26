@@ -4,7 +4,6 @@ import ReusableField from "./field/ReusableField";
 import { Textarea } from "@/components/ui/textarea";
 import UploadImageContainer from "./UploadImageContainer";
 import { Camera } from "lucide-react";
-import { useEffect } from "react";
 import {
   FormControl,
   FormField,
@@ -20,6 +19,7 @@ interface SeoSettingsReusableProps {
   getValues: any;
   control: any;
   reset: any;
+  label? :string;
 }
 
 const SeoSettingsReusable = ({
@@ -29,6 +29,7 @@ const SeoSettingsReusable = ({
   getValues,
   control,
   reset,
+  label,
 }: SeoSettingsReusableProps) => {
 
   return (
@@ -58,7 +59,7 @@ const SeoSettingsReusable = ({
           </FormItem>
         )}
       />
-      {/* <Textarea {...register("seo_keywords")} placeholder="SEO Keywords" /> */}
+      <Textarea {...register("seo_keywords")} placeholder="SEO Keywords" />
       <UploadImageContainer
         icon={<Camera size={70} color="gray" />}
         name="seo_image_url"

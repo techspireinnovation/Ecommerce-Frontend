@@ -6,7 +6,7 @@ export const categorySchema = z.object({
   image_url: imageSchema.optional(),
   seo_title: z.string().optional(),
   seo_description: z.string().optional(),
-  seo_keywords: z.string().array().optional().default([]),
+  seo_keywords: z.string(),
   seo_image_url: imageSchema.optional(),
   status: z.boolean().default(true),
   image_file: z.string().optional(),

@@ -11,7 +11,7 @@ import { CategoryTypes } from "@/features/product/categories/category.schema";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { toast } from "sonner";
-import { useEffect } from "react";
+import { useCallback, useEffect } from "react";
 import { Form } from "@/components/ui/form";
 
 interface ReusableCreateDialogProps {
@@ -41,30 +41,30 @@ const ReusableCreateDialog = ({
       name: "",
       seo_title: "",
       seo_description: "",
-      seo_keywords: [],
+      seo_keywords: '',
     },
   });
 
-  const getById = async (id: number) => {
-    const res = await showFn(selectedId);
-    const api = res.data.data;
-    console.log("api", api);
-    methods.reset(
-      {
-        name: api.name ?? "",
-        seo_image_url: api.seo_image_url,
-
-        seo_title: api.seo_title ?? "",
-        seo_description: api.seo_description ?? "",
-        seo_keywords: api.seo_keywords ?? [],
-        status: api.status === "active",
-        image_url: api.image_url,
-      },
-      {
-        keepDirty: true,
-      },
-    );
-  };
+  const getById = useCallback(
+    async (id: number) => {
+      const res = await showFn(id);
+      const api = res.data.data;
+      console.log('api', {api});
+      methods.reset(
+        {
+          name: api.name ?? "",
+          seo_title: api.seo_title ?? "",
+          seo_description: api.seo_description ?? "",
+          seo_keywords: api.seo_keywords ?? [],
+          seo_image_url: api.seo_image_url,
+          image_url: api.image_url,
+          status: api.status === "active",
+        },
+        { keepDirty: false },
+      );
+    },
+    [methods, showFn],
+  );
 
   useEffect(() => {
     if (isEdit) {
@@ -72,55 +72,67 @@ const ReusableCreateDialog = ({
     }
   }, [isEdit]);
 
-  const onSubmitHandler = async (data: CategoryTypes) => {
-    const formData = new FormData();
-    formData.append("name", data.name);
-    formData.append("status", data.status == true ? "1" : "0");
+  const buildFormData = (data: CategoryTypes) => {
+    const fd = new FormData();
 
-    if (typeof data.image_url == "string") {
-      formData.append("image", data.image_url);
-      formData.append("seo_image", data?.seo_image_url);
+    fd.append("name", data.name);
+    fd.append("status", data.status ? "1" : "0");
+
+    if (data.image_url instanceof File) {
+      fd.append("image", data.image_url);
+      fd.append("seo_image", data.image_url);
     }
 
+    // if (data.seo_image_url instanceof File) {
+    //   fd.append("seo_image", data.seo_image_url);
+    // }
+
+    if (data.seo_title) fd.append("seo_title", data.seo_title);
     if (data.seo_description)
-      formData.append("seo_description", data.seo_description);
-    formData.delete("seo_keywords");
-    formData.append("seo_keywords[]", "rice");
-    if (data.seo_title) formData.append("seo_title", data.seo_title);
-    try {
-      let res = undefined;
-      if (isEdit) {
-        formData.append("_method", "PUT");
-        res = await updateFn(formData, selectedId);
-      } else {
-        res = await createFn(formData);
-      }
-      if (res.success == false) {
-        const error = res.error.body.message;
-        console.log("res", { error: res });
-        const newformData = res.FormData;
-        for (const pair of newformData.entries()) {
-          console.log(pair[0], pair[1]);
-        }
-        toast.error(error, { position: "bottom-center" });
-      }
-      if (res.success == true) {
-        toast.success("Category created Successfully");
-      }
-    } catch (error) {
-      console.log("error", { error });
-    } finally {
-      console.log("finally");
-    }
+      fd.append("seo_description", data.seo_description);
+    const seoKWArr = data.seo_keywords?.split(",");
+    seoKWArr.forEach((keyword) => {
+      fd.append("seo_keywords[]", keyword);
+    });
+
+    return fd;
   };
+
+  const onSubmitHandler = useCallback(
+    async (data: CategoryTypes) => {
+      const formData = buildFormData(data);
+
+      try {
+        let res;
+        if (isEdit) {
+          formData.append("_method", "PUT");
+          res = await updateFn(formData, selectedId);
+        } else {
+          res = await createFn(formData);
+        }
+        if (!res?.success) {
+          toast.error(res?.error?.body?.message ?? "Failed to save");
+          return;
+        }
+
+        toast.success(
+          isEdit
+            ? "Category updated successfully"
+            : "Category created successfully",
+        );
+      } catch (error) {
+        console.error(error);
+        toast.error("Something went wrong");
+      } finally {
+        console.log("finally");
+      }
+    },
+    [isEdit, selectedId, createFn, updateFn],
+  );
 
   const onErrorHandler = (errors: any) => {
     console.log(errors, { values: methods.getValues() });
     const firstError = Object.entries(errors)[0];
-    if (firstError) {
-      const [field, error] = firstError;
-      const message = error?.message;
-    }
   };
 
   return (
@@ -149,6 +161,7 @@ const ReusableCreateDialog = ({
             control={methods.control}
             getValues={methods.getValues}
             reset={methods.reset}
+            label={label}
           />
           <ReusableStatusCard
             control={methods.control}
