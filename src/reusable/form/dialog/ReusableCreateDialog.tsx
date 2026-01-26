@@ -46,26 +46,24 @@ const ReusableCreateDialog = ({
   });
 
   const getById = async (id: number) => {
-    (async () => {
-      const res = await showFn(selectedId);
-      const api = res.data.data;
-      console.log("api", api);
-      methods.reset(
-        {
-          name: api.name ?? "",
-          seo_image_url: api.seo_image_url,
+    const res = await showFn(selectedId);
+    const api = res.data.data;
+    console.log("api", api);
+    methods.reset(
+      {
+        name: api.name ?? "",
+        seo_image_url: api.seo_image_url,
 
-          seo_title: api.seo_title ?? "",
-          seo_description: api.seo_description ?? "",
-          seo_keywords: api.seo_keywords ?? [],
-          status: api.status === "active",
-          image_url: api.image_url,
-        },
-        {
-          keepDirty: false,
-        },
-      );
-    })();
+        seo_title: api.seo_title ?? "",
+        seo_description: api.seo_description ?? "",
+        seo_keywords: api.seo_keywords ?? [],
+        status: api.status === "active",
+        image_url: api.image_url,
+      },
+      {
+        keepDirty: true,
+      },
+    );
   };
 
   useEffect(() => {
@@ -81,7 +79,7 @@ const ReusableCreateDialog = ({
 
     if (typeof data.image_url == "string") {
       formData.append("image", data.image_url);
-      formData.append("seo_image", data.seo_image_url);
+      formData.append("seo_image", data?.seo_image_url);
     }
 
     if (data.seo_description)

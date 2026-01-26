@@ -14,8 +14,7 @@ import { Button } from "@/components/ui/button";
 import { SquarePen, Trash2 } from "lucide-react";
 import Image from "next/image";
 import { toast } from "sonner";
-import { useRouter } from "next/navigation";
-import { useMemo, useState } from "react";
+import { useCallback, useMemo, useState } from "react";
 export type Category = {
   id: number;
   slug: string;
@@ -42,20 +41,20 @@ export function StatusBadge({ status }: { status: string }) {
   );
 }
 
-const deleteCategoryFunc = async (id: number) => {
-  try {
-    const res = await deleteCategory(id);
-    console.log("res", res);
-    toast.success(res.message);
-  } catch (error) {
-    console.log("error", error);
-  }
-};
-
 const Page = () => {
   const [renderModal, setRenderModal] = useState<boolean>(false);
   const [isEdit, setIsEdit] = useState<boolean>(false);
   const [selectedId, setSelectedId] = useState<number | undefined>(undefined);
+
+  const deleteCategoryFunc = useCallback(async (id: number) => {
+    try {
+      const res = await deleteCategory(id);
+      toast.success(res.message);
+    } catch (error) {
+      console.log("error", error);
+    }
+  }, []);
+
   const categoryColumns: ColumnDef<Category>[] = useMemo(
     () => [
       {
@@ -164,7 +163,7 @@ const Page = () => {
         },
       },
     ],
-    [],
+    [setRenderModal, setIsEdit, setSelectedId],
   );
 
   return (

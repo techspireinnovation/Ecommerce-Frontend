@@ -5,48 +5,47 @@ import { ReusableListTable } from "../table/data-table";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import ReusableDialog from "../dialog/ReusableDialog";
+import { ColumnDef } from "@tanstack/react-table";
 
 export interface ListPageWrapperProps {
   pageFor: string;
   createRoute?: string;
   renderModal?: boolean;
-  columns: any;
-  children?:any;
+  columns: ColumnDef<any>[];
+  children?: React.ReactNode;
   url: string;
 }
 
 const ListPageWrapper = ({
   pageFor,
-  createRoute,
+  createRoute = undefined,
   renderModal,
   columns,
   children,
-  url
+  url,
 }: ListPageWrapperProps) => {
   const uppercaseText = pageFor;
   const router = useRouter();
-  const [isModalOpen, setModalOpen] = useState<boolean | undefined>(renderModal);
+  const [isModalOpen, setModalOpen] = useState<boolean>(false);
 
   const handleAddClick = () => {
-    if (renderModal) {
+    if (createRoute == undefined) {
       setModalOpen(true);
-    } else if (createRoute) {
+    } else {
       router.push(createRoute);
     }
   };
 
-
-  useEffect(()=>{
-    if(renderModal == true){
-      setModalOpen(true);
-    }
-  }, [renderModal])
+  useEffect(() => {
+    if(!renderModal) return;
+    setModalOpen(true);
+  }, [renderModal]);
 
   return (
     <div>
       <div className="flex items-center justify-between">
         <div>
-          <h2 className="!text-3xl font-bold  ">{uppercaseText} Management</h2>
+          <h4 className="mb-1">{uppercaseText} Management</h4>
           <p className="!text-sm !text-gray-500 ">
             Manage and organize your {uppercaseText}
           </p>
@@ -56,7 +55,7 @@ const ListPageWrapper = ({
       </div>
       <Card className="mt-10">
         <CardContent className="px-0">
-          <ReusableListTable  columns={columns} pageFor={pageFor} url={url}/>
+          <ReusableListTable columns={columns} pageFor={pageFor} url={url} />
         </CardContent>
       </Card>
       {

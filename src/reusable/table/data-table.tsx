@@ -23,7 +23,7 @@ import { Button } from "@/components/ui/button";
 import { useEffect, useState } from "react";
 import { getCategoryList } from "@/features/product/categories/categoryActions";
 
-export const ReusableListTable = ({ columns, pageFor, url }: any)=> {
+export const ReusableListTable = ({ columns, pageFor }: any)=> {
   const [data, setData] = useState<any[]>([]);
   const [isLoading, setIsLoading] = useState(false);
 
@@ -72,40 +72,6 @@ export const ReusableListTable = ({ columns, pageFor, url }: any)=> {
           onChange={(e) => setGlobalFilter(e.target.value)}
           className="max-w-sm"
         />
-
-        <div className="flex items-center gap-2">
-          {/* <Select>
-            <SelectTrigger className="w-[150px]">
-              <SelectValue placeholder="All Status" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="active">Active</SelectItem>
-              <SelectItem value="low_stock">Low Stock</SelectItem>
-              <SelectItem value="inactive">Inactive</SelectItem>
-            </SelectContent>
-          </Select>
-
-          <Select>
-            <SelectTrigger className="w-[150px]">
-              <SelectValue placeholder="Brands" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="apple">Apple</SelectItem>
-              <SelectItem value="samsung">Samsung</SelectItem>
-            </SelectContent>
-          </Select>
-
-          <Select>
-            <SelectTrigger className="w-[150px]">
-              <SelectValue placeholder="Category" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="smartphones">Smartphones</SelectItem>
-              <SelectItem value="laptops">Laptops</SelectItem>
-              <SelectItem value="smartwatches">Smartwatches</SelectItem>
-            </SelectContent>
-          </Select> */}
-        </div>
       </div>
 
       <div className="rounded-md border">
