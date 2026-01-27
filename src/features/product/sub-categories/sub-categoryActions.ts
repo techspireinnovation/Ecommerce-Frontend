@@ -68,7 +68,7 @@ export async function deleteSubCategory(id: any) {
 }
 export async function showSubCategory(id: any) {
   try {
-    const res = await apiFetch(`/admin/subCategories/${id}`, {
+    const res = await apiFetch(`/admin/subcategories/${id}`, {
       method: "GET"
     });
 
@@ -91,7 +91,7 @@ export async function showSubCategory(id: any) {
 
 export async function updateSubCategory(data: FormData, id: number) {
   try {
-    const res = await apiFetch(`/admin/subCategories/${id}`, {
+    const res = await apiFetch(`/admin/subcategories/${id}`, {
       method: "POST",
       body: data,
     });

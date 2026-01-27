@@ -3,7 +3,6 @@ import { z } from "zod";
 
 export const subCategorySchema = z.object({
   name: z.string(),
-  slug: z.string(),
   category_id: z.string(),
   category_name: z.string().nullable(),
 

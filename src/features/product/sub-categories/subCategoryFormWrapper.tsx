@@ -28,6 +28,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { consoleFormData } from "@/utils/helper/formDataHelper";
 
 const SubCategoryForWrapper = ({
   label,
@@ -45,7 +46,6 @@ const SubCategoryForWrapper = ({
     shouldUnregister: false,
     defaultValues: {
       name: "",
-      slug: "",
 
       category_name: null,
 
@@ -63,18 +63,29 @@ const SubCategoryForWrapper = ({
 
   const getById = useCallback(
     async (id: number) => {
+      console.log({id})
       const res = await showFn(id);
-      const api = res.data.data;
-      console.log("api", { api });
-      methods.reset();
+            console.log('getById',{res})
+      const data = res.data.data;
+     
+     
+      methods.reset({
+        category_id: data.category_id,
+        category_name: data.category_name,
+        image_url: data.image_url,
+        name: data.name,
+        seo_description: data.seo_description,
+        seo_image_url: data.seo_image_url,
+        seo_title: data.seo_title,
+        seo_keywords: data.seo_keywords.join(','),
+        status: data.status 
+      });
     },
     [methods, showFn],
   );
 
   const getActiveCategoryUi = useCallback(async () => {
     const res = await getActiveCategoryListApi();
-    console.log("resCui", res);
-    const data = res.data.data;
     const successStatus = res.success;
     if (successStatus == true) {
       const data = res.data.data;
@@ -90,6 +101,7 @@ const SubCategoryForWrapper = ({
   }, []);
 
   useEffect(() => {
+    console.log({isEdit, selectedId});
     if (isEdit) {
       getById(selectedId);
     }
@@ -110,6 +122,9 @@ const SubCategoryForWrapper = ({
     if (data.seo_title) {
       fd.append("seo_title", data.seo_title);
     }
+    if (data.seo_description) {
+      fd.append("seo_description", data.seo_description);
+    }
     if (data.seo_keywords) {
       const seoKWArr = data.seo_keywords?.split(",");
       seoKWArr.forEach((keyword) => {
@@ -117,17 +132,18 @@ const SubCategoryForWrapper = ({
       });
     }
     fd.append("status", data.status ? "1" : "0");
+    return fd;
   };
 
   const onSubmitHandler = useCallback(
     async (data: SubCategorytypes) => {
       const formData = buildFormData(data);
-
+      console.log(consoleFormData(formData));
       try {
         let res;
         if (isEdit) {
-          // formData.append("_method", "PUT");
-          // res = await updateFn(formData, selectedId);
+          formData.append("_method", "PUT");
+          res = await updateFn(formData, selectedId);
         } else {
           res = await createFn(formData);
           console.log("res", { res });
@@ -139,8 +155,8 @@ const SubCategoryForWrapper = ({
 
         toast.success(
           isEdit
-            ? "Category updated successfully"
-            : "Category created successfully",
+            ? "Sub Category updated successfully"
+            : "Sub Category created successfully",
         );
       } catch (error) {
         console.error(error);

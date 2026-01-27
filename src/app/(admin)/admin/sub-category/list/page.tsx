@@ -11,7 +11,13 @@ import { Button } from "@/components/ui/button";
 import { SquarePen, Trash2 } from "lucide-react";
 import { deleteReusableFunction } from "@/utils/helper/deleteFunction";
 import { deleteCategory } from "@/features/product/categories/categoryActions";
-import { createSubCategory, getSubCategoryList, showSubCategory, updateSubCategory } from "@/features/product/sub-categories/sub-categoryActions";
+import {
+  createSubCategory,
+  deleteSubCategory,
+  getSubCategoryList,
+  showSubCategory,
+  updateSubCategory,
+} from "@/features/product/sub-categories/sub-categoryActions";
 import { subCategorySchema } from "@/features/product/sub-categories/sub-category.schema";
 
 export type SubCategory = {
@@ -156,7 +162,7 @@ const Page = () => {
                 variant="ghost"
                 className="hover:text-destructive"
                 onClick={() =>
-                  deleteReusableFunction(subCategory.id, deleteCategory)
+                  deleteReusableFunction(subCategory.id, deleteSubCategory)
                 }
               >
                 <Trash2 className="h-4 w-4" />
@@ -180,13 +186,13 @@ const Page = () => {
     >
       <DialogCreateFormHeader pageFor={pageFor} />
       <SubCategoryForWrapper
-      isEdit={isEdit}
-      label="Sub-category"
-      schema={subCategorySchema}
-      createFn={createSubCategory}
-      updateFn={updateSubCategory}
-      showFn={showSubCategory}
-      selectedId={selectedId}
+        isEdit={isEdit}
+        label="Sub-category"
+        schema={subCategorySchema}
+        createFn={createSubCategory}
+        updateFn={updateSubCategory}
+        showFn={showSubCategory}
+        selectedId={selectedId}
       />
     </ListPageWrapper>
   );
