@@ -13,16 +13,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { toast } from "sonner";
 import { useCallback, useEffect } from "react";
 import { Form } from "@/components/ui/form";
-
-interface ReusableCreateDialogProps {
-  label: string;
-  schema: any;
-  createFn: any;
-  isEdit: boolean;
-  updateFn: any;
-  showFn: any;
-  selectedId: any;
-}
+import { ReusableCreateDialogProps } from "@/features/product/categories/categories.types";
 
 const ReusableCreateDialog = ({
   label,
@@ -41,7 +32,7 @@ const ReusableCreateDialog = ({
       name: "",
       seo_title: "",
       seo_description: "",
-      seo_keywords: '',
+      seo_keywords: "",
     },
   });
 
@@ -49,7 +40,7 @@ const ReusableCreateDialog = ({
     async (id: number) => {
       const res = await showFn(id);
       const api = res.data.data;
-      console.log('api', {api});
+      console.log("api", { api });
       methods.reset(
         {
           name: api.name ?? "",

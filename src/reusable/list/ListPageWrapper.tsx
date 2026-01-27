@@ -14,6 +14,7 @@ export interface ListPageWrapperProps {
   columns: ColumnDef<any>[];
   children?: React.ReactNode;
   url: string;
+  listApi: any;
 }
 
 const ListPageWrapper = ({
@@ -23,6 +24,7 @@ const ListPageWrapper = ({
   columns,
   children,
   url,
+  listApi
 }: ListPageWrapperProps) => {
   const uppercaseText = pageFor;
   const router = useRouter();
@@ -55,7 +57,7 @@ const ListPageWrapper = ({
       </div>
       <Card className="mt-10">
         <CardContent className="px-0">
-          <ReusableListTable columns={columns} pageFor={pageFor} url={url} />
+          <ReusableListTable columns={columns} pageFor={pageFor} url={url} listApi={listApi}/>
         </CardContent>
       </Card>
       {

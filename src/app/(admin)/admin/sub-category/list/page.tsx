@@ -11,6 +11,8 @@ import { Button } from "@/components/ui/button";
 import { SquarePen, Trash2 } from "lucide-react";
 import { deleteReusableFunction } from "@/utils/helper/deleteFunction";
 import { deleteCategory } from "@/features/product/categories/categoryActions";
+import { createSubCategory, getSubCategoryList, showSubCategory, updateSubCategory } from "@/features/product/sub-categories/sub-categoryActions";
+import { subCategorySchema } from "@/features/product/sub-categories/sub-category.schema";
 
 export type SubCategory = {
   id: number;
@@ -174,9 +176,18 @@ const Page = () => {
       pageFor={pageFor}
       renderModal={renderModal}
       url="/admin/sub-categories"
+      listApi={getSubCategoryList}
     >
       <DialogCreateFormHeader pageFor={pageFor} />
-      <SubCategoryForWrapper pageFor={pageFor} />
+      <SubCategoryForWrapper
+      isEdit={isEdit}
+      label="Sub-category"
+      schema={subCategorySchema}
+      createFn={createSubCategory}
+      updateFn={updateSubCategory}
+      showFn={showSubCategory}
+      selectedId={selectedId}
+      />
     </ListPageWrapper>
   );
 };

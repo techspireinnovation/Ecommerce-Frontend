@@ -2,9 +2,9 @@
 
 import { apiFetch } from "@/utils/fetch";
 
-export async function createCategory(data: FormData) {
+export async function createSubCategory(data: FormData) {
   try {
-    const res = await apiFetch("/admin/categories", {
+    const res = await apiFetch("/admin/subcategories", {
       method: "POST",
       body: data,
     });
@@ -15,17 +15,19 @@ export async function createCategory(data: FormData) {
       message: "Category created successfully",
     };
   } catch (error) {
+
     return {
       success: false,
       error,
       message: "Failed to create category",
+   
     };
   }
 }
-export async function getCategoryList() {
+export async function getSubCategoryList() {
   try {
-    const res = await apiFetch("/admin/categories", {
-      method: "GET",
+    const res = await apiFetch("/admin/subcategories", {
+      method: "GET"
     });
 
     return {
@@ -34,17 +36,19 @@ export async function getCategoryList() {
       message: "Category fetched successfully",
     };
   } catch (error) {
+
     return {
       success: false,
       error,
       message: "Failed to create category",
+   
     };
   }
 }
-export async function deleteCategory(id: any) {
+export async function deleteSubCategory(id: any) {
   try {
-    const res = await apiFetch(`/admin/categories/${id}`, {
-      method: "DELETE",
+    const res = await apiFetch(`/admin/subcategories/${id}`, {
+      method: "DELETE"
     });
 
     return {
@@ -53,17 +57,19 @@ export async function deleteCategory(id: any) {
       message: "Category Deleted successfully",
     };
   } catch (error) {
+
     return {
       success: false,
       error,
       message: "Failed to create category",
+   
     };
   }
 }
-export async function showCategory(id: any) {
+export async function showSubCategory(id: any) {
   try {
-    const res = await apiFetch(`/admin/categories/${id}`, {
-      method: "GET",
+    const res = await apiFetch(`/admin/subCategories/${id}`, {
+      method: "GET"
     });
 
     return {
@@ -72,17 +78,20 @@ export async function showCategory(id: any) {
       message: "Category fetched successfully",
     };
   } catch (error) {
+
     return {
       success: false,
       error,
       message: "Failed to create category",
+   
     };
   }
 }
 
-export async function updateCategory(data: FormData, id: number) {
+
+export async function updateSubCategory(data: FormData, id: number) {
   try {
-    const res = await apiFetch(`/admin/categories/${id}`, {
+    const res = await apiFetch(`/admin/subCategories/${id}`, {
       method: "POST",
       body: data,
     });
@@ -90,36 +99,17 @@ export async function updateCategory(data: FormData, id: number) {
     return {
       success: true,
       data: res,
-      formData: data,
+      formData: data, 
       message: "Category created successfully",
     };
   } catch (error) {
+
     return {
       success: false,
       error,
       FormData: data,
       message: "Failed to create category",
-    };
-  }
-}
-
-
-export async function getActiveCategoryListApi() {
-  try {
-    const res = await apiFetch("/admin/categories/active", {
-      method: "GET",
-    });
-
-    return {
-      success: true,
-      data: res,
-      message: "Category fetched successfully",
-    };
-  } catch (error) {
-    return {
-      success: false,
-      error,
-      message: "Failed to create category",
+   
     };
   }
 }

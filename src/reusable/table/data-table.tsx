@@ -21,9 +21,8 @@ import {
 
 import { Button } from "@/components/ui/button";
 import { useEffect, useState } from "react";
-import { getCategoryList } from "@/features/product/categories/categoryActions";
 
-export const ReusableListTable = ({ columns, pageFor }: any)=> {
+export const ReusableListTable = ({ columns, pageFor, listApi }: any)=> {
   const [data, setData] = useState<any[]>([]);
   const [isLoading, setIsLoading] = useState(false);
 
@@ -37,7 +36,7 @@ export const ReusableListTable = ({ columns, pageFor }: any)=> {
     const fetchData = async () => {
       setIsLoading(true);
       try {
-        const res = await getCategoryList();
+        const res = await listApi();
         console.log('res', {res: res,data:res?.data?.data})
         setData(res.data.data);
       } catch (error) {

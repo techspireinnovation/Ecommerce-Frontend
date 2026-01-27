@@ -5,6 +5,7 @@ import { categorySchema } from "@/features/product/categories/category.schema";
 import {
   createCategory,
   deleteCategory,
+  getCategoryList,
   showCategory,
   updateCategory,
 } from "@/features/product/categories/categoryActions";
@@ -15,6 +16,7 @@ import { SquarePen, Trash2 } from "lucide-react";
 import Image from "next/image";
 import { toast } from "sonner";
 import { useCallback, useMemo, useState } from "react";
+import { deleteReusableFunction } from "@/utils/helper/deleteFunction";
 export type Category = {
   id: number;
   slug: string;
@@ -45,15 +47,6 @@ const Page = () => {
   const [renderModal, setRenderModal] = useState<boolean>(false);
   const [isEdit, setIsEdit] = useState<boolean>(false);
   const [selectedId, setSelectedId] = useState<number | undefined>(undefined);
-
-  const deleteCategoryFunc = useCallback(async (id: number) => {
-    try {
-      const res = await deleteCategory(id);
-      toast.success(res.message);
-    } catch (error) {
-      console.log("error", error);
-    }
-  }, []);
 
   const categoryColumns: ColumnDef<Category>[] = useMemo(
     () => [
@@ -153,7 +146,7 @@ const Page = () => {
                 variant="ghost"
                 className="hover:text-destructive"
                 onClick={() => {
-                  deleteCategoryFunc(category.id);
+                  deleteReusableFunction(category.id, deleteCategory);
                 }}
               >
                 <Trash2 className="h-4 w-4" />
@@ -172,6 +165,7 @@ const Page = () => {
       pageFor="Category"
       renderModal={renderModal}
       url="/admin/categories"
+      listApi={getCategoryList}
     >
       <ReusableCreateDialog
         isEdit={isEdit}
