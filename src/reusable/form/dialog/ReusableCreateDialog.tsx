@@ -12,7 +12,6 @@ import {
   CategoryTypes,
 } from "@/features/product/categories/category.schema";
 import { toast } from "sonner";
-import { useCallback, useEffect } from "react";
 import { Form } from "@/components/ui/form";
 import { ReusableCreateDialogProps } from "@/features/product/categories/categories.types";
 import { useCrudForm } from "@/hooks/useCrudForm";
@@ -21,11 +20,7 @@ import { buildSeoFormData } from "@/utils/form/buildSeoFormData";
 
 const ReusableCreateDialog = ({
   label,
-  schema,
   isEdit,
-  updateFn,
-  showFn,
-  createFn,
   selectedId,
 }: ReusableCreateDialogProps) => {
   const methods = useCrudForm<CategoryTypes>({
@@ -56,7 +51,8 @@ const ReusableCreateDialog = ({
  const onSubmit = async (
     data: CategoryTypes,
   ) => {
-    const fd = new FormData();
+    let fd = new FormData();
+    fd = buildFormData(data);
     fd.append("name", data.name);
     fd.append("status", data.status ? "1" : "0");
 
@@ -95,7 +91,7 @@ const ReusableCreateDialog = ({
     <>
       <DialogCreateFormHeader pageFor={label} />
       <Form {...methods}>
-        <form onSubmit={methods.handleSubmit(onSubmitHandler, onErrorHandler)}>
+        <form onSubmit={methods.handleSubmit(onSubmit, onErrorHandler)}>
           <UploadImageContainer
             icon={<Image size={80} color="gray" />}
             label={label}

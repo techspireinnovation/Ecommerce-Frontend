@@ -39,7 +39,7 @@ export const ReusableListTable = ({ columns, pageFor, listApi }: any)=> {
         const res = await listApi();
         console.log('res', {res: res,data:res?.data})
         setData(res.data.data);
-      } catch (error) {ts
+      } catch (error) {
         console.error("Error fetching users", error);
       } finally {
         setIsLoading(false);

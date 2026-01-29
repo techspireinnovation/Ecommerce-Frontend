@@ -14,8 +14,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { SquarePen, Trash2 } from "lucide-react";
 import Image from "next/image";
-import { toast } from "sonner";
-import { useCallback, useMemo, useState } from "react";
+import { useMemo, useState } from "react";
 import { deleteReusableFunction } from "@/utils/helper/deleteFunction";
 import { categoryCrud } from "@/features/product/categories/category.crud";
 export type Category = {
