@@ -17,6 +17,7 @@ import Image from "next/image";
 import { toast } from "sonner";
 import { useCallback, useMemo, useState } from "react";
 import { deleteReusableFunction } from "@/utils/helper/deleteFunction";
+import { categoryCrud } from "@/features/product/categories/category.crud";
 export type Category = {
   id: number;
   slug: string;
@@ -165,7 +166,7 @@ const Page = () => {
       pageFor="Category"
       renderModal={renderModal}
       url="/admin/categories"
-      listApi={getCategoryList}
+      listApi={categoryCrud.list}
     >
       <ReusableCreateDialog
         isEdit={isEdit}

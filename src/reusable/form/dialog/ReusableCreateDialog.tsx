@@ -7,13 +7,17 @@ import SubmitCancel from "../submitCancel";
 import UploadImageContainer from "../UploadImageContainer";
 import { Image } from "lucide-react";
 import DialogCreateFormHeader from "./header";
-import { CategoryTypes } from "@/features/product/categories/category.schema";
-import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
+import {
+  categorySchema,
+  CategoryTypes,
+} from "@/features/product/categories/category.schema";
 import { toast } from "sonner";
 import { useCallback, useEffect } from "react";
 import { Form } from "@/components/ui/form";
 import { ReusableCreateDialogProps } from "@/features/product/categories/categories.types";
+import { useCrudForm } from "@/hooks/useCrudForm";
+import { categoryCrud } from "@/features/product/categories/category.crud";
+import { buildSeoFormData } from "@/utils/form/buildSeoFormData";
 
 const ReusableCreateDialog = ({
   label,
@@ -24,44 +28,19 @@ const ReusableCreateDialog = ({
   createFn,
   selectedId,
 }: ReusableCreateDialogProps) => {
-  const methods = useForm<CategoryTypes>({
-    resolver: zodResolver(schema),
-    shouldUnregister: false,
-
+  const methods = useCrudForm<CategoryTypes>({
+    schema: categorySchema,
     defaultValues: {
       name: "",
       seo_title: "",
       seo_description: "",
       seo_keywords: "",
+      status: true,
     },
+    isEdit,
+    selectedId,
+    showFn: categoryCrud.show,
   });
-
-  const getById = useCallback(
-    async (id: number) => {
-      const res = await showFn(id);
-      const api = res.data.data;
-      console.log("api", { api });
-      methods.reset(
-        {
-          name: api.name ?? "",
-          seo_title: api.seo_title ?? "",
-          seo_description: api.seo_description ?? "",
-          seo_keywords: api.seo_keywords ?? [],
-          seo_image_url: api.seo_image_url,
-          image_url: api.image_url,
-          status: api.status === "active",
-        },
-        { keepDirty: false },
-      );
-    },
-    [methods, showFn],
-  );
-
-  useEffect(() => {
-    if (isEdit) {
-      getById(selectedId);
-    }
-  }, [isEdit]);
 
   const buildFormData = (data: CategoryTypes) => {
     const fd = new FormData();
@@ -69,57 +48,43 @@ const ReusableCreateDialog = ({
     fd.append("name", data.name);
     fd.append("status", data.status ? "1" : "0");
 
-    if (data.image_url instanceof File) {
-      fd.append("image", data.image_url);
-      fd.append("seo_image", data.image_url);
-    }
-
-    // if (data.seo_image_url instanceof File) {
-    //   fd.append("seo_image", data.seo_image_url);
-    // }
-
-    if (data.seo_title) fd.append("seo_title", data.seo_title);
-    if (data.seo_description)
-      fd.append("seo_description", data.seo_description);
-    const seoKWArr = data.seo_keywords?.split(",");
-    seoKWArr.forEach((keyword) => {
-      fd.append("seo_keywords[]", keyword);
-    });
+    buildSeoFormData(fd, data);
 
     return fd;
   };
 
-  const onSubmitHandler = useCallback(
-    async (data: CategoryTypes) => {
-      const formData = buildFormData(data);
+ const onSubmit = async (
+    data: CategoryTypes,
+  ) => {
+    const fd = new FormData();
+    fd.append("name", data.name);
+    fd.append("status", data.status ? "1" : "0");
 
-      try {
-        let res;
-        if (isEdit) {
-          formData.append("_method", "PUT");
-          res = await updateFn(formData, selectedId);
-        } else {
-          res = await createFn(formData);
-        }
-        if (!res?.success) {
-          toast.error(res?.error?.body?.message ?? "Failed to save");
-          return;
-        }
+    if (data.image_url instanceof File) {
+      fd.append("image", data.image_url);
+    }
 
-        toast.success(
-          isEdit
-            ? "Category updated successfully"
-            : "Category created successfully",
-        );
-      } catch (error) {
-        console.error(error);
-        toast.error("Something went wrong");
-      } finally {
-        console.log("finally");
+    buildSeoFormData(fd, data);
+
+    try {
+      const res = isEdit
+        ? await categoryCrud.update(selectedId!, fd)
+        : await categoryCrud.create(fd);
+
+      if (!res?.success) {
+        toast.error("Failed to save category");
+        return;
       }
-    },
-    [isEdit, selectedId, createFn, updateFn],
-  );
+
+      toast.success(
+        isEdit
+          ? "Category updated"
+          : "Category created",
+      );
+    } catch {
+      toast.error("Something went wrong");
+    }
+  };
 
   const onErrorHandler = (errors: any) => {
     console.log(errors, { values: methods.getValues() });

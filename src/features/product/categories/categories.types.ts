@@ -7,3 +7,13 @@ export interface ReusableCreateDialogProps {
   showFn: any;
   selectedId: any;
 }
+
+
+export interface Category {
+  id: number;
+  name: string;
+  slug: string;
+  image_url: string;
+  status: "active" | "inactive";
+  created_at: string;
+}

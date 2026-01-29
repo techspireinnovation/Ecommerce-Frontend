@@ -13,18 +13,12 @@ import { useCallback, useEffect, useState } from "react";
 import { toast } from "sonner";
 import {
   Form,
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
 } from "@/components/ui/form";
 import { getActiveCategoryListApi } from "../categories/categoryActions";
 import {
   Select,
   SelectContent,
-  SelectGroup,
   SelectItem,
-  SelectLabel,
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
